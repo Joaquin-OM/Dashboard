@@ -1,0 +1,231 @@
+/* Estilos generales */
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2c3e50;
+  --accent-color: #e74c3c;
+  --background-light: #f8f9fa;
+  --text-dark: #333;
+  --transition-speed: 0.3s;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7fa;
+  margin: 0;
+  padding: 0;
+  transition: background-color var(--transition-speed);
+}
+
+/* Barra lateral */
+.sidebar {
+  width: 250px;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+  background-color: var(--background-light);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  transition: all var(--transition-speed);
+  z-index: 1000;
+}
+
+.sidebar h4 {
+  color: var(--secondary-color);
+  margin: 20px 0;
+  font-weight: 600;
+  transition: color var(--transition-speed);
+}
+
+.sidebar .nav-link {
+  color: var(--text-dark);
+  font-weight: 500;
+  padding: 12px 15px;
+  margin: 5px 0;
+  border-radius: 8px;
+  transition: all var(--transition-speed);
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar .nav-link:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(52, 152, 219, 0.1);
+  transition: all 0.5s ease;
+  z-index: -1;
+}
+
+.sidebar .nav-link:hover:before {
+  left: 0;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+  background: var(--primary-color);
+  color: white;
+  transform: translateX(5px);
+  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+
+/* Contenido principal */
+.content {
+  margin-left: 250px;
+  width: calc(100% - 250px);
+  transition: margin-left var(--transition-speed), width var(--transition-speed);
+}
+
+/* Encabezado */
+header {
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all var(--transition-speed);
+  animation: headerFadeIn 1s ease-out;
+}
+
+header h3 {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Contenido de la aplicación */
+#app-content {
+  padding: 20px;
+  animation: fadeIn 0.5s ease-out;
+  min-height: 80vh;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  margin: 20px;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Animaciones para el contenido */
+#app-content.fade-out {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#app-content.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Estilos para el spinner de carga */
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+/* Estilos para la página de bienvenida */
+.welcome-section {
+  text-align: center;
+  padding: 30px;
+}
+
+.feature-icons {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: 40px;
+}
+
+.feature-item {
+  padding: 20px;
+  margin: 10px;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  width: 160px;
+}
+
+.feature-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.feature-item .icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+/* Estilos para los títulos animados */
+.animated-title {
+  position: relative;
+  display: inline-block;
+}
+
+.header-underline {
+  height: 3px;
+  width: 0;
+  background: var(--primary-color);
+  margin-top: 8px;
+  transition: width 0.8s ease;
+  animation: expandWidth 0.8s forwards;
+}
+
+@keyframes expandWidth {
+  from { width: 0; }
+  to { width: 100px; }
+}
+
+.page-header {
+  margin-bottom: 20px;
+}
+
+/* Estilo para la tarjeta de contenido */
+.card {
+  border: none;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para el footer */
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+/* Estilo para el icono de usuario */
+.user-info {
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.user-info:hover {
+  opacity: 0.8;
+}
+
+@keyframes headerFadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+  }
+  .content {
+    margin-left: 200px;
+    width: calc(100% - 200px);
+  }
+}
