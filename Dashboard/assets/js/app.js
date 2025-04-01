@@ -1,10 +1,10 @@
 import { Navbar } from './components/Navbar.js';
 import { Sidebar } from './components/Sidebar.js';
 import { Content } from './components/Content.js';
-import { Renombrado } from './components/Renombrado.js';
-import { Comparacion } from './components/Comparacion.js';
-import { Envio } from './components/Envio.js';
-import { Registro } from './components/Registro.js';
+import { Renombrado, setupRenombrado } from './components/Renombrado.js';
+import { Comparacion, setupComparacion } from './components/Comparacion.js';
+import { Envio, setupEnvio } from './components/Envio.js';
+import { Registro, setupRegistro } from './components/Registro.js';
 import { Manual } from './components/Manual.js';
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -72,15 +72,19 @@ document.addEventListener("DOMContentLoaded", function() {
                 break;
             case 'renombrado':
                 content.innerHTML = Renombrado();
+                setupRenombrado();
                 break;
             case 'comparacion':
                 content.innerHTML = Comparacion();
+                setupComparacion();
                 break;
             case 'envio':
                 content.innerHTML = Envio();
+                setupEnvio();
                 break;
             case 'registro':
                 content.innerHTML = Registro();
+                setupRegistro();
                 break;
             case 'manual':
                 content.innerHTML = Manual();
@@ -96,6 +100,42 @@ document.addEventListener("DOMContentLoaded", function() {
                         <p>Esta es una demostración del contenido para la sección de ${page}. Aquí podrás gestionar todas las funcionalidades relacionadas.</p>
                     </div>`;
         }
+    }
+
+    // Controlador del tema
+    const themeToggle = document.getElementById('themeToggle');
+    const themeToggleMobile = document.getElementById('themeToggleMobile');
+
+    // Función para aplicar el tema
+    function setTheme(isDark) {
+    if (isDark) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        if (themeToggle) themeToggle.checked = true;
+        if (themeToggleMobile) themeToggleMobile.checked = true;
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+        if (themeToggle) themeToggle.checked = false;
+        if (themeToggleMobile) themeToggleMobile.checked = false;
+    }
+    }
+
+    // Verificar el tema guardado al cargar
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme === 'dark');
+
+    // Event listeners para los switches
+    if (themeToggle) {
+    themeToggle.addEventListener('change', (e) => {
+        setTheme(e.target.checked);
+    });
+    }
+
+    if (themeToggleMobile) {
+    themeToggleMobile.addEventListener('change', (e) => {
+        setTheme(e.target.checked);
+    });
     }
 
     function setActiveLink(activeLink) {

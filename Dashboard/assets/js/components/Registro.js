@@ -297,12 +297,64 @@ export const setupRegistro = () => {
                 const id = e.currentTarget.getAttribute('data-id');
                 const doc = documentos.find(d => d._id === id);
                 if (doc) {
-                    mostrarToast('PDF', `Generando PDF para el documento: ${doc.documento}`, 'bg-info');
+                    generarPDF(doc);
                 }
             });
         });
     }
 
+    // Función para generar un PDF con la información del registro
+    function generarPDF(doc) {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF();
+    
+        // Configuración del PDF
+        pdf.setFontSize(18);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text("Detalles del Documento", 10, 20);
+    
+        // Información del Registro
+        pdf.setFontSize(12);
+        pdf.setFont('helvetica', 'normal');
+        pdf.text(`Cliente: ${doc.cliente || '-'}`, 10, 30);
+        pdf.text(`Documento: ${doc.documento || '-'}`, 10, 40);
+        pdf.text(`Responsable: ${doc.responsable || '-'}`, 10, 50);
+    
+        let fechaMostrar = doc.fecha;
+        if (fechaMostrar && fechaMostrar.includes('T')) {
+            fechaMostrar = fechaMostrar.split('T')[0];
+        }
+        pdf.text(`Fecha: ${fechaMostrar || '-'}`, 10, 60);
+    
+        // Crear recuadros para firmar con tamaños más grandes
+        const firmaYPos = 80;
+        const firmaAltura = 30; // Altura mayor para mayor espacio para firmar
+        const firmaAncho = 90; // Ancho mayor para más espacio
+    
+        // Recuadro para firma 1
+        pdf.rect(10, firmaYPos, firmaAncho, firmaAltura); // Coordenadas (x, y), ancho y alto
+        pdf.text('Firma del Cliente', 15, firmaYPos + 15); // Ajuste de posición dentro del recuadro
+        
+        // Recuadro para firma 2
+        pdf.rect(10 + firmaAncho + 10, firmaYPos, firmaAncho, firmaAltura); // Coordenadas ajustadas
+        pdf.text('Firma del Responsable', 15 + firmaAncho + 10, firmaYPos + 15);
+    
+        // Separador de sección (opcional)
+        pdf.line(10, firmaYPos + firmaAltura + 5, 200, firmaYPos + firmaAltura + 5); // Línea horizontal
+    
+        // Crear el nombre del archivo en el formato FECHA_DOCUMENTO_CLIENTE
+        const fecha = doc.fecha ? doc.fecha.split('T')[0] : 'sin_fecha';
+        const documento = doc.documento || 'sin_documento';
+        const cliente = doc.cliente || 'sin_cliente';
+        
+        // Guardar el PDF con el formato deseado
+        const nombreArchivo = `${fecha}_${documento}_${cliente}.pdf`;
+        pdf.save(nombreArchivo);
+    
+        // Mostrar mensaje de éxito
+        mostrarToast('Éxito', 'PDF generado correctamente', 'bg-success');
+    }    
+    
     // Función para agregar documento
     function agregarDocumento() {
         const cliente = document.getElementById('cliente').value.trim();
@@ -409,4 +461,42 @@ export const setupRegistro = () => {
             mostrarToast('Error', error.message, 'bg-danger');
         });
     }
+
+    // Función para eliminar documento
+    function eliminarDocumento() {
+        const id = document.getElementById('documentoIdEliminar').value;
+
+        fetch(`${API_URL}/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'x-apikey': API_KEY
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al eliminar documento');
+            }
+            return response.json();
+        })
+        .then(() => {
+            mostrarToast('Éxito', 'Documento eliminado exitosamente');
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('confirmarEliminarModal'));
+            modal.hide();
+
+            cargarDocumentos();
+        })
+        .catch(error => {
+            mostrarToast('Error', error.message, 'bg-danger');
+        });
+    }
+
+    // Configurar eventos
+    btnAgregarDocumento.addEventListener('click', agregarDocumento);
+    btnActualizarLista.addEventListener('click', cargarDocumentos);
+    btnGuardarEdicion.addEventListener('click', editarDocumento);
+    btnConfirmarEliminar.addEventListener('click', eliminarDocumento);
+
+    // Cargar los documentos al inicializar
+    cargarDocumentos();
 };
